@@ -10,20 +10,8 @@ env:
   # KUBE_CONTEXT: upme2/6g:upme
 
 jobs:
-  build:
-    uses: ./.github/workflows/build.yml
-
-  webservices:
-    uses: ./.github/workflows/webservices.yml
-
-  deploy:
-    uses: ./.github/workflows/deploy.yml
+  databases:
+    uses: ./.github/workflows/databases.yml
 
   secrets:
     uses: ./.github/workflows/secrets.yml
-
-  observability:
-    uses: ./.github/workflows/observability.yml
-
-  security:
-    uses: ./.github/workflows/security.yml
