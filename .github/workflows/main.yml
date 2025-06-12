@@ -10,8 +10,11 @@ env:
   # KUBE_CONTEXT: upme2/6g:upme
 
 jobs:
-  databases:
-    uses: ./.github/workflows/databases.yml
+  # databases:
+  #   uses: ./.github/workflows/databases.yml
 
-  secrets:
-    uses: ./.github/workflows/secrets.yml
+  # secrets:
+  #   uses: ./.github/workflows/secrets.yml
+
+  deploy:
+    uses: ./.github/workflows/deploy.yml
