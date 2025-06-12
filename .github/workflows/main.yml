@@ -5,8 +5,8 @@ on:
     branches: [main]
   workflow_dispatch:
 
-env:
-  KUBE_CONTEXT: upme2/6g:personal
+#env:
+  # KUBE_CONTEXT: upme2/6g:personal
   # KUBE_CONTEXT: upme2/6g:upme
 
 jobs:

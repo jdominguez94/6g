@@ -8,17 +8,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Set up kubeconfig
-      run: |
-        mkdir -p $HOME/.kube
-        echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > $HOME/.kube/config
-        chmod 600 $HOME/.kube/config
+      - name: Validate KUBECONFIG_BASE64 secret
+        run: |
+          if [ -z "${{ secrets.KUBECONFIG_BASE64 }}" ]; then
+            echo "❌ Secret KUBECONFIG_BASE64 is not set or is empty"
+            exit 1
+          else
+            echo "✅ Secret KUBECONFIG_BASE64 is set"
+          fi
 
-    - name: Verify connection
-      run: kubectl get nodes
+      - name: Set up kubeconfig
+        run: |
+          set -euo pipefail
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
 
-    - name: Apply manifests
-      run: kubectl apply -f ./setup/runnerdeployment.yaml
+      - name: Verify Kubernetes connection
+        run: |
+          set -euo pipefail
+          echo "🔍 Getting cluster nodes..."
+          kubectl get nodes || (echo "❌ Failed to connect to Kubernetes cluster" && exit 1)
+
+      - name: Apply Kubernetes manifests
+        run: |
+          set -euo pipefail
+          echo "🚀 Applying Kubernetes manifests..."
+          kubectl apply -f ./setup/runnerdeployment.yaml
+
+      - name: Clean up kubeconfig
+        if: always()
+        run: rm -f $HOME/.kube/config
