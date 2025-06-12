@@ -10,21 +10,21 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-#
-      - name: Validate KUBECONFIG_BASE64 secret
+
+      - name: Validate KUBECONFIG secret
         run: |
-          if [ -z "${{ secrets.KUBECONFIG_BASE64 }}" ]; then
-            echo "❌ Secret KUBECONFIG_BASE64 is not set or is empty"
+          if [ -z "${{ secrets.KUBECONFIG }}" ]; then
+            echo "❌ Secret KUBECONFIG is not set or is empty"
             exit 1
           else
-            echo "✅ Secret KUBECONFIG_BASE64 is set"
+            echo "✅ Secret KUBECONFIG is set"
           fi
 
       - name: Set up kubeconfig
         run: |
           set -euo pipefail
           mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > $HOME/.kube/config
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
 
       - name: Verify Kubernetes connection
