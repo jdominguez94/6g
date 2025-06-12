@@ -1,0 +1,58 @@
+name: Deploy
+
+on:
+  workflow_call:
+
+env:
+  KUBE_CONTEXT: upme2/6g:personal
+
+jobs:
+  Redis:
+    runs-on: ubuntu-latest
+    container:
+      image: dtzar/helm-kubectl
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Set kube context
+        run: |
+          kubectl config get-contexts
+          kubectl config use-context "$KUBE_CONTEXT"
+      - name: Add Helm repo
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
+      - name: Create namespace if needed
+        run: |
+          if ! kubectl get namespace databases >/dev/null 2>&1; then
+            kubectl create namespace databases
+          fi
+      - name: Deploy Redis
+        run: |
+          helm upgrade --install redis bitnami/redis \
+            --namespace databases \
+            -f ./databases/redis/values.yaml
+
+  PostgreSQL_HA:
+    runs-on: ubuntu-latest
+    container:
+      image: dtzar/helm-kubectl
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Set kube context
+        run: |
+          kubectl config get-contexts
+          kubectl config use-context "$KUBE_CONTEXT"
+      - name: Add Helm repo
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
+      - name: Create namespace if needed
+        run: |
+          if ! kubectl get namespace databases >/dev/null 2>&1; then
+            kubectl create namespace databases
+          fi
+      - name: Deploy PostgreSQL HA
+        run: |
+          helm upgrade --install postgresdb-ha bitnami/postgresql-ha \
+            --namespace databases \
+            -f ./databases/postgresql/values.yaml

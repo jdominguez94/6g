@@ -1,0 +1,9 @@
+name: Use Kube Context
+description: Set kubectl context from environment variable
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        kubectl config get-contexts
+        kubectl config use-context "$KUBE_CONTEXT"
+      shell: bash
