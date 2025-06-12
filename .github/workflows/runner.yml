@@ -13,11 +13,11 @@ jobs:
 #
       - name: Validate KUBECONFIG_BASE64 secret
         run: |
-          if [ -z "${{ secrets.KUBECONFIG_BASE64 }}" ]; then
-            echo "❌ Secret KUBECONFIG_BASE64 is not set or is empty"
+          if [ -z "${{ secrets.USER }}" ]; then
+            echo "❌ Secret USER is not set or is empty"
             exit 1
           else
-            echo "✅ Secret KUBECONFIG_BASE64 is set"
+            echo "✅ Secret USER is set"
           fi
 
       - name: Set up kubeconfig
