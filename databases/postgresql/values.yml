@@ -1,0 +1,60 @@
+postgresql:
+  repmgrUsername: repmgr
+  repmgrPassword: repmgrpass
+  repmgrDatabase: repmgr
+
+  password: postgres123
+  repmgrLogLevel: DEBUG
+
+  initdbScripts:
+    create-user-and-db.sql: |
+      -- Crear las bases de datos
+      CREATE DATABASE "BD075" OWNER "postgres";
+      CREATE DATABASE "UPME_STA" OWNER "postgres";
+
+      -- Crear el usuario
+      CREATE USER "USER_ETL_DWH_STA" WITH ENCRYPTED PASSWORD 'D42C06A38AAD8067BE1C9640A5257666';
+
+      -- Otorgar privilegios a nivel de base de datos para AMBAS bases de datos
+      GRANT ALL PRIVILEGES ON DATABASE "UPME_STA" TO "USER_ETL_DWH_STA";
+      GRANT ALL PRIVILEGES ON DATABASE "BD075" TO "USER_ETL_DWH_STA";
+
+      -- Configurar permisos en UPME_STA
+      \c "UPME_STA"
+      GRANT USAGE ON SCHEMA public TO "USER_ETL_DWH_STA";
+      GRANT CREATE ON SCHEMA public TO "USER_ETL_DWH_STA";
+      GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "USER_ETL_DWH_STA";
+      GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "USER_ETL_DWH_STA";
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "USER_ETL_DWH_STA";
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO "USER_ETL_DWH_STA";
+
+      -- Configurar permisos en BD075
+      \c "BD075"
+      GRANT USAGE ON SCHEMA public TO "USER_ETL_DWH_STA";
+      GRANT CREATE ON SCHEMA public TO "USER_ETL_DWH_STA";
+      GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "USER_ETL_DWH_STA";
+      GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "USER_ETL_DWH_STA";
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "USER_ETL_DWH_STA";
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO "USER_ETL_DWH_STA";
+
+pgpool:
+  adminUsername: admin
+  adminPassword: pgpooladmin
+  customUsersSecret: pgpool-users-secret
+
+  replicaCount: 2
+
+replicaCount: 3
+
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClass: ""
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
