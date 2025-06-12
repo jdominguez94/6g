@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 #env:
-  # KUBE_CONTEXT: upme2/6g:personal
+  #KUBE_CONTEXT: upme2/6g:personal
   # KUBE_CONTEXT: upme2/6g:upme
 
 jobs:
@@ -16,5 +16,6 @@ jobs:
   # secrets:
   #   uses: ./.github/workflows/secrets.yml
 
-  deploy:
+  deploy-runner:
     uses: ./.github/workflows/runner.yml
+    secrets: inherit
